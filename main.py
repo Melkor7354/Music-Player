@@ -19,6 +19,17 @@ def convert_to_binary(file_path):
     return image.read()
 
 
+def convert_to_image(binary, song_title):
+    result_file = song_title
+
+    with open(result_file, 'wb') as file_handler:
+        file_handler.write(binary)
+
+    Image.open(result_file).save(result_file + '.png', 'PNG')
+
+    os.remove(result_file)
+
+
 class Song:
     def __init__(self, song_path, title, artist, album, cover):
         self.title = title
@@ -64,17 +75,6 @@ class Playlist(list):
 
 
 print(convert_to_binary(r"C:\Users\EKLAVYA\Pictures\GUI\home_icon-removebg-preview.png"))
-
-
-def convert_to_image(binary, song_title):
-    result_file = song_title
-
-    with open(result_file, 'wb') as file_handler:
-        file_handler.write(binary)
-
-    Image.open(result_file).save(result_file + '.png', 'PNG')
-
-    os.remove(result_file)
 
 
 convert_to_image(convert_to_binary(r"C:\Users\EKLAVYA\Pictures\Playlists\34d99c2e-1362-47d0-aebd-d980590d5e9c.jpg"),
