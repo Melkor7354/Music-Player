@@ -3,6 +3,7 @@ import os
 from PIL import Image
 import pickle
 import audioread
+import UI
 
 audiofile = eyed3.load(r"C:\Users\EKLAVYA\Music\Atrax Morgue\in search of death\04 in search of death.mp3")
 '''audiofile.tag.artist = "Token Entry"
@@ -12,6 +13,16 @@ audiofile.tag.title = "The Edge"
 audiofile.tag.track_num = 3
 audiofile.tag.save()'''
 print(audiofile.tag._getArtist())
+
+def dark_title_bar(window):
+    window.update()
+    set_window_attribute = ct.windll.dwmapi.DwmSetWindowAttribute
+    get_parent = ct.windll.user32.GetParent
+    hwnd = get_parent(window.winfo_id())
+    value = 2
+    value = ct.c_int(value)
+    set_window_attribute(hwnd, 20, ct.byref(value),
+                         4)
 
 
 def convert_to_binary(file_path):
@@ -30,6 +41,23 @@ def convert_to_image(binary, song_title):
     os.remove(result_file)
 
 
+def initialize():
+    parent_dir = os.path.expanduser('~')
+    _dir = 'music_files'
+    _dir2 = 'music_files/images'
+    _dir3 = 'music_files/artists'
+    path = os.path.join(parent_dir, _dir)
+    path2 = os.path.join(parent_dir, _dir2)
+    path3 = os.path.join(parent_dir, _dir3)
+    try:
+        mode = 0o666
+        os.mkdir(mode=mode, path=path)
+        os.mkdir(mode=mode, path=path2)
+        os.mkdir(mode=mode, path=path3)
+    except FileExistsError:
+        pass
+
+
 class Song:
     def __init__(self, song_path, title, artist, album, cover):
         self.title = title
@@ -37,6 +65,14 @@ class Song:
         self.album = album
         self.cover_art = cover
         self.duration = audioread.audio_open(song_path).duration()
+        self.song_path = ''
+        for i in song_path:
+            if i==' ':
+                self.song_path += '_'
+            else:
+                self.song_path += i
+
+
 
     def save(self):
         with open('{}'.format(self.title), 'wb') as file:
@@ -48,7 +84,7 @@ class Song:
 
 class Playlist(list):
     def __init__(self, title, description, cover_image):
-        list.__init__()
+        list.__init__(self)
         self.title = title
         self.description = description
         self.cover = convert_to_binary(cover_image)
@@ -60,11 +96,24 @@ class Playlist(list):
         self.duration = duration
         self.song_count = song_count
 
-    def check_duplicates(self):
-        pass
+    def check_duplicates(self, song_list):
+        non_duplicates = []
+        result = 0
+        for i in song_list:
+            for j in self:
+                if i.info() == j.info():
+                    result = 1
+            else:
+                non_duplicates.append(i)
+        if result == 0:
+            return (0, non_duplicates)
+        else:
+            return (1, non_duplicates)
 
-    def add_song(self):
-        pass
+    def add_song(self, song):
+        result = self.check_duplicates([song])
+        if result[0] == 0:
+
 
     def add_multiple_songs(self):
         pass
