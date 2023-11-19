@@ -3,7 +3,7 @@ import os
 from PIL import Image
 import pickle
 import audioread
-import UI
+import eel
 
 audiofile = eyed3.load(r"C:\Users\EKLAVYA\Music\Atrax Morgue\in search of death\04 in search of death.mp3")
 '''audiofile.tag.artist = "Token Entry"
@@ -14,15 +14,7 @@ audiofile.tag.track_num = 3
 audiofile.tag.save()'''
 print(audiofile.tag._getArtist())
 
-def dark_title_bar(window):
-    window.update()
-    set_window_attribute = ct.windll.dwmapi.DwmSetWindowAttribute
-    get_parent = ct.windll.user32.GetParent
-    hwnd = get_parent(window.winfo_id())
-    value = 2
-    value = ct.c_int(value)
-    set_window_attribute(hwnd, 20, ct.byref(value),
-                         4)
+eel.init('../Web')
 
 
 def convert_to_binary(file_path):
@@ -59,11 +51,10 @@ def initialize():
 
 
 class Song:
-    def __init__(self, song_path, title, artist, album, cover):
+    def __init__(self, song_path, title, artist, album):
         self.title = title
         self.artist = artist
         self.album = album
-        self.cover_art = cover
         self.duration = audioread.audio_open(song_path).duration()
         self.song_path = ''
         for i in song_path:
@@ -72,22 +63,20 @@ class Song:
             else:
                 self.song_path += i
 
-
-
     def save(self):
         with open('{}'.format(self.title), 'wb') as file:
             pickle.dump(self, file)
 
     def info(self):
-        return [self.title, self.artist, self.album, self.cover_art, self.duration]
+        return [self.title, self.artist, self.album, self.duration]
 
 
 class Playlist(list):
-    def __init__(self, title, description, cover_image):
+    def __init__(self, title, description=None):
         list.__init__(self)
         self.title = title
         self.description = description
-        self.cover = convert_to_binary(cover_image)
+        self.cover = self.add_cover()
         duration = 0
         song_count = 0
         for song in self:
@@ -113,27 +102,36 @@ class Playlist(list):
     def add_song(self, song):
         result = self.check_duplicates([song])
         if result[0] == 0:
+            self.append(song)
+            return True
+        else:
+            return False
 
+    def add_multiple_songs(self, songs):
+        result = self.check_duplicates(songs)
+        if result[0] == 0:
+            self.append(songs)
+        else:
+            self.append(result[1])
 
-    def add_multiple_songs(self):
-        pass
+    def remove_songs(self, songs):
+        for song in songs:
+            self.remove(song)
 
     def save(self):
         with open('{}'.format(self.title), 'wb') as file:
             pickle.dump(self, file)
 
+    def delete(self):
+        os.remove('{}'.format(self.title))
 
-print(convert_to_binary(r"C:\Users\EKLAVYA\Pictures\GUI\home_icon-removebg-preview.png"))
+    def add_cover(self):
+        from tkinter.filedialog import askopenfilename
+        filename = askopenfilename()
+        return convert_to_binary(filename)
+
+    def info(self):
+        return [self.title, self.description, self.cover, self.duration, self.song_count]
 
 
-convert_to_image(convert_to_binary(r"C:\Users\EKLAVYA\Pictures\Playlists\34d99c2e-1362-47d0-aebd-d980590d5e9c.jpg"),
-                 'hello')
-
-
-'''song = Song('a', 'b', 'c', 'd')
-song.save()
-
-#load it
-with open(f'title', 'rb') as file2:
-    song_new = pickle.load(file2)
-print(song_new.info())'''
+eel.start('index.html')
