@@ -135,10 +135,4 @@ class Playlist(list):
         return [self.title, self.description, self.cover, self.duration, self.song_count]
 
 
-    def play(self):
-
-
-
-
-
 eel.start('index.html')
