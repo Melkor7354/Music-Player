@@ -3,6 +3,7 @@ import os
 from PIL import Image
 import pickle
 import audioread
+import random
 import eel
 
 audiofile = eyed3.load(r"C:\Users\EKLAVYA\Music\Atrax Morgue\in search of death\04 in search of death.mp3")
@@ -132,6 +133,12 @@ class Playlist(list):
 
     def info(self):
         return [self.title, self.description, self.cover, self.duration, self.song_count]
+
+
+    def play(self):
+
+
+
 
 
 eel.start('index.html')
