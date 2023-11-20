@@ -33,7 +33,7 @@ def convert_to_image(binary, song_title):
 
     os.remove(result_file)
 
-
+@eel.expose
 def initialize():
     parent_dir = os.path.expanduser('~')
     _dir = 'music_files'

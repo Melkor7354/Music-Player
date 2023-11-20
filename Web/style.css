@@ -8,7 +8,7 @@ div.topbar {
 
 }
 .image-container {
-    left: 42%;
+    left: 37%;
     position: absolute;
     top: 0;
     height: 100%;
@@ -27,7 +27,7 @@ div.topbar_text {
     background-color: black;
     color: rgba(25,95,175,0.94);
     position: absolute;
-    left: 50%;
+    left: 45%;
     opacity: 1.0;
     margin: auto;
     top: 25%;
